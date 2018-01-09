@@ -2,9 +2,9 @@
 __author__ = 'laobzhang'
 import xlrd
 import time
-import pymysql
+
 import datetime
-import torndb
+
 import time
 import sys
 from pymongo import MongoClient
