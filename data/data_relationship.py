@@ -42,4 +42,5 @@ def get_avg(first=True,second=True):
 
 
 if __name__ == '__main__':
+    pass
     # get_avg()
