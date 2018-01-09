@@ -68,6 +68,6 @@ def department():
 
 
 if __name__ == '__main__':
-    base_data_insert()
+    # base_data_insert()
     # department_data()
     # department()

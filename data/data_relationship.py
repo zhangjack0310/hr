@@ -42,4 +42,4 @@ def get_avg(first=True,second=True):
 
 
 if __name__ == '__main__':
-    get_avg()
+    # get_avg()
