@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-    <title>测试Pie饼状图型</title>
+    <title>Laobzhang</title>
      <script src="//cdn.bootcss.com/Chart.js/2.7.1/Chart.bundle.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -40,7 +40,10 @@
         <td v-for="title in table2_head">{{each_data[title]}}</td>
         <td><button class="ui yellow button" @click="showRadar(each_data)">雷达图</button></td>
 
-
+    </tr>
+    <tr>
+        <td>部门平均分</td>
+        <td v-for="num in team.score">{{num}}</td><td></td><td></td>
     </tr>
     </tbody>
 </table>
