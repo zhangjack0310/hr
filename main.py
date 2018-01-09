@@ -2,7 +2,9 @@
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
-from data.data_insert import db
+from pymongo import MongoClient
+conn = MongoClient()
+db = conn.hr
 import json
 define("debug", default=True, help="run in debug mode")
 settings = {"debug":True,
