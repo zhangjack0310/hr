@@ -13,6 +13,24 @@
     </style>
 </head>
 <body>
+
+<div class="ui container" id="selector1">
+<select class="ui search dropdown selection" v-model="base_select" @change="firstd()">
+  <option>事业部</option>
+  <option v-for="(value,key) in department" :value=key>{{key}}</option>
+</select>
+<select class="ui search dropdown selection" v-model="first_select" @change="secondd()">
+  <option>一级部门</option>
+  <option v-for="(value,key) in department[base_select]" :value=key>{{key}}</option>
+</select>
+<select class="ui search dropdown selection" v-model="second_select">
+  <option>二级部门</option>
+  <option v-for="(key,index) in first_value" :value=key>{{key}}</option>
+</select>
+    <div class="ui blue button d_submit">提交</div>
+</div>
+
+
 <div id="vuetest" class="ui container">
     <h2 class="ui dividing header">总览</h2>
     <h2 class="ui dividing header">绩效打分明细</h2>
@@ -61,6 +79,33 @@
 
 
 <script>
+
+//    $('.tag.example .ui.dropdown').dropdown({
+//    allowAdditions: true});
+
+    var vselect = new Vue({
+        el: '#selector1',
+        data: {
+            department: [],
+            base_select:"事业部",
+            first_select:"一级部门",
+            second_select:"二级部门",
+            first_value:""
+        },
+        methods: {
+            firstd:function () {
+                vselect.first_select = '一级部门';
+            },
+            secondd:function () {
+                vselect.second_select = '二级部门';
+                vselect.first_value = vselect.department[vselect.base_select][vselect.first_select]
+            },
+            first_value:function () {
+
+            }
+
+        }
+    });
 
     var vm = new Vue({
         el: '#vuetest',
@@ -210,7 +255,24 @@
             vm.table2_head = res_data.table2_head;
             vm.team.score = res_data.avg_score;
         });
+    $.get(
+//        "http://198.13.53.253:8887/get_data",
+        "http://localhost/get_selector",
+        function (res_data) {
+            console.log(res_data.department_data);
+            vselect.department = res_data.department_data
+
+        });
     }
+    $('.d_submit').on('click',function () {
+        console.log(vselect.first_select);
+        var d_data = {"firstd":vselect.first_select,
+        "based":vselect.base_select,"secondd":vselect.second_select};
+        $.get("http://localhost/get_data",d_data,
+            function (res_data) {
+                console.log(res_data.staff_data);
+            });
+    })
 
 
 

@@ -49,6 +49,27 @@ def department_data():
     for i in depart_dic:
         db.base_department.insert({"info":depart_dic[i],'department':i})
 
+def department_pure_data():
+    '''部门结构（不含员工）'''
+    base_department = pure_table.col_values(1)
+    depart_list = list(set(base_department))
+    depart_dic = {department:{} for department in depart_list}
+    for i in range(nrows-1):
+        # print pure_table.row_values(i)
+        [name,based,firstd,secondd] = pure_table.row_values(i)[0:4]
+        # print based,firstd,secondd
+        if depart_dic[based].has_key(firstd):
+            depart_dic[based][firstd].append(secondd)
+        else:
+            depart_dic[based][firstd] = []
+    # print depart_dic
+    for based in depart_dic:
+        for firstd in depart_dic[based]:
+            depart_dic[based][firstd] = list(set(depart_dic[based][firstd]))
+    for i in depart_dic:
+        db.department_info.insert({"info":depart_dic[i],'department':i})
+
+
 
 def department():
     '''部门结构'''
@@ -68,7 +89,8 @@ def department():
 
 
 if __name__ == '__main__':
-    pass
+
     # base_data_insert()
     # department_data()
     # department()
+    department_pure_data()

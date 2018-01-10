@@ -34,6 +34,10 @@ class GetdataHandler(tornado.web.RequestHandler):
 
     # @tornado.web.authenticated
     def get(self):
+        based = self.get_argument('based',"总部")
+        firstd = self.get_argument('firstd','财务部')
+        secondd = self.get_argument('secondd','财务部')
+        print based,firstd,secondd
         people = db.base.find({"事业部":"总部","一级部门":"财务部","二级部门":"财务部"},{"_id":0})
         depart_avg = db.depart_avg.find_one({"事业部":"总部","一级部门":"财务部","二级部门":"财务部"}, {"_id":0})
         avg_score = [depart_avg[u'团队建设'], depart_avg[u'员工培养'], depart_avg[u'协调安排'], depart_avg[u'合理授权']]
@@ -73,6 +77,26 @@ class GetheadHandler(tornado.web.RequestHandler):
 
 
 
+class GetselectorHandler(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+    # @tornado.web.authenticated
+    def get(self):
+        departments = db.department_info.find({},{"_id" : 0})
+        res = {}
+        for i in departments:
+
+            res[i.get('department')] = i.get('info')
+        result = {'department_data':res}
+
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(result, ensure_ascii=False))
+
+
+
 
 
 
@@ -88,6 +112,7 @@ application = tornado.web.Application([
     (r"/", MainHandler),
     (r"/get_data", GetdataHandler),
     (r"/get_head", GetheadHandler),
+    (r"/get_selector", GetselectorHandler),
 
     ],**settings)
 
