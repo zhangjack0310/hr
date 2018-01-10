@@ -72,6 +72,10 @@
  <div>
     <canvas id="myChart"></canvas>
  </div>
+<h2 class="ui dividing header">人才盘点九宫图</h2>
+     <div>
+    <canvas id="myBubble"></canvas>
+ </div>
 </div>
 
 <!--引入 chartjs-->
@@ -121,7 +125,8 @@
             },
             staff_data : [],
             table1_head : [],
-            table2_head : []
+            table2_head : [],
+            bubble_data : [],
         },
         methods: {
             showRadar: function (user_data) {
@@ -249,11 +254,13 @@
 //        "http://198.13.53.253:8887/get_data",
             "http://localhost/get_data",
         function (res_data) {
-            console.log(res_data.staff_data)
+            console.log(res_data.bubble_data)
             vm.staff_data = res_data.staff_data;
             vm.table1_head = res_data.table1_head;
             vm.table2_head = res_data.table2_head;
             vm.team.score = res_data.avg_score;
+            vm.bubble_data = res_data.bubble_data;
+            myBubble()
         });
     $.get(
 //        "http://198.13.53.253:8887/get_data",
@@ -271,8 +278,23 @@
         $.get("http://localhost/get_data",d_data,
             function (res_data) {
                 console.log(res_data.staff_data);
+                vm.staff_data = res_data.staff_data;
+                vm.table1_head = res_data.table1_head;
+                vm.table2_head = res_data.table2_head;
+                vm.team.score = res_data.avg_score;
+                vm.bubble_data = res_data.bubble_data;
+                myBubble()
             });
     })
+    function myBubble() {
+            var ctx1 = document.getElementById("myBubble").getContext("2d");
+                    var myBubble = new Chart(ctx1, {
+                        type: 'bubble',
+                        data: {'datasets': vm.bubble_data},
+                        options: Chart.defaults.bubble
+                    });
+    }
+
 
 
 

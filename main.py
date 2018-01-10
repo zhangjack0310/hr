@@ -2,6 +2,7 @@
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
+from data.bubble import form_bubble_data
 from pymongo import MongoClient
 conn = MongoClient()
 db = conn.hr
@@ -34,21 +35,25 @@ class GetdataHandler(tornado.web.RequestHandler):
 
     # @tornado.web.authenticated
     def get(self):
-        based = self.get_argument('based',"总部")
-        firstd = self.get_argument('firstd','财务部')
-        secondd = self.get_argument('secondd','财务部')
+        based = self.get_argument('based', u"总部")
+        firstd = self.get_argument('firstd', u'财务部')
+        secondd = self.get_argument('secondd', u'财务部')
         print based,firstd,secondd
-        people = db.base.find({"事业部":"总部","一级部门":"财务部","二级部门":"财务部"},{"_id":0})
+        department_data = {"based":based,"firstd":firstd, "secondd":secondd}
+        people = db.base.find({"事业部":based,"一级部门":firstd,"二级部门":secondd},{"_id":0})
         depart_avg = db.depart_avg.find_one({"事业部":"总部","一级部门":"财务部","二级部门":"财务部"}, {"_id":0})
         avg_score = [depart_avg[u'团队建设'], depart_avg[u'员工培养'], depart_avg[u'协调安排'], depart_avg[u'合理授权']]
         total_data = list(people)
+        bubble_data = map(form_bubble_data,total_data)
 
         table1_head = [u'姓名', u'工作业绩得分', u'能力素质得分', u'价值观得分', u'绩效得分', u'绩效分类']
         table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'能力素质得分']
         result = {'staff_data': map(self.map_data, total_data)}
         result.update({"table1_head": table1_head,
                        'table2_head': table2_head,
-                       'avg_score': avg_score})
+                       'avg_score': avg_score,
+                       'department_data':department_data,
+                       'bubble_data':bubble_data})
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(result, ensure_ascii=False))
 
