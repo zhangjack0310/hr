@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+         <script src="//cdn.bootcss.com/Chart.js/2.7.1/Chart.bundle.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="static/semantic.js"></script>
+    <link href="static/semantic.css" rel="stylesheet">
+</head>
+<body>
+<div class="ui container">
+<h2 class="ui dividing header">总览</h2>
+<div class="ui cards" id="vuetest">
+
+  <div class="card" id="div1" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <div class="content">
+        <div class="header">未选中字段</div>
+        <div v-for="key in unchosen_head" class="ui label" draggable="true" ondragstart="drag(event)" :id=key>{{key}}</div>
+        <!--<div class="ui label" draggable="true" ondragstart="drag(event)" id="姓名">姓名</div>-->
+        <!--<div class="ui label" draggable="true" ondragstart="drag(event)" id="年龄">年龄</div>-->
+        <!--<div class="ui label" draggable="true" ondragstart="drag(event)" id="部门">部门</div>-->
+        <!--<div class="ui label" draggable="true" ondragstart="drag(event)" id="职位">职位</div>-->
+
+    </div>
+  </div>
+  <div class="card" id="div2" ondrop="dest_drop(event)" ondragover="allowDrop(event)">
+    <div class="content chosen_data">
+        <div class="header">已选中字段</div>
+
+  </div>
+
+</div>
+    <br>
+    <p>{{head}}</p>
+</div>
+
+    <div class="ui button blue data_submit">提交</div>
+</div>
+</body>
+</html>
+<script>
+
+$('.data_submit').on('click',function () {
+   console.log($('.chosen_data'))
+});
+
+function allowDrop(ev)
+{
+
+ev.preventDefault();
+}
+
+function drag(ev)
+{
+ev.dataTransfer.setData("Text",ev.target.id);
+}
+
+function drop(ev)
+{
+ev.preventDefault();
+var data=ev.dataTransfer.getData("Text");
+ev.target.appendChild(document.getElementById(data));
+vm.head.splice($.inArray(data,vm.head),1)
+}
+
+function dest_drop(ev)
+{
+ev.preventDefault();
+var data=ev.dataTransfer.getData("Text");
+console.log(data);
+vm.head.push(data)
+ev.target.appendChild(document.getElementById(data));
+}
+
+
+
+    var vm = new Vue({
+        el: '#vuetest',
+        data: {
+            head: [],
+            unchosen_head:[],
+            team:{
+                "name":"部门平均分",
+                "score":[25, 25, 25, 25]
+            },
+            person:{
+                "name":"laobzhang",
+                "score":[18, 19, 19, 23]
+            },
+            staff_data : [],
+            table1_head : [],
+            table2_head : []
+        },
+        methods: {
+
+        }
+    });
+
+
+
+    $(function () {
+
+
+        first_get_data();
+
+    });
+
+    function first_get_data() {
+    $.get(
+//        "http://198.13.53.253:8887/get_data",
+            "http://localhost/get_head",
+        function (res_data) {
+
+            vm.unchosen_head = res_data.unchosen_head;
+
+        });
+    }
+
+</script>

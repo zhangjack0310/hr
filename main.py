@@ -40,7 +40,7 @@ class GetdataHandler(tornado.web.RequestHandler):
         total_data = list(people)
 
         table1_head = [u'姓名', u'工作业绩得分', u'能力素质得分', u'价值观得分', u'绩效得分', u'绩效分类']
-        table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'潜力分类']
+        table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'能力素质得分']
         result = {'staff_data': map(self.map_data, total_data)}
         result.update({"table1_head": table1_head,
                        'table2_head': table2_head,
@@ -57,6 +57,25 @@ class GetdataHandler(tornado.web.RequestHandler):
 
 
 
+class GetheadHandler(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+    # @tornado.web.authenticated
+    def get(self):
+        people = db.base.find_one({},{"_id" : 0})
+        head = people.keys()
+        result = {"unchosen_head":head}
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(result, ensure_ascii=False))
+
+
+
+
+
+
 
 
 
@@ -68,6 +87,7 @@ class GetdataHandler(tornado.web.RequestHandler):
 application = tornado.web.Application([
     (r"/", MainHandler),
     (r"/get_data", GetdataHandler),
+    (r"/get_head", GetheadHandler),
 
     ],**settings)
 
