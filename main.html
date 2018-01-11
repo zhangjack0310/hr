@@ -275,7 +275,7 @@
         console.log(vselect.first_select);
         var d_data = {"firstd":vselect.first_select,
         "based":vselect.base_select,"secondd":vselect.second_select};
-        $.get("http://localhost/get_data",d_data,
+        $.get("http://198.13.53.253/get_data",d_data,
             function (res_data) {
                 console.log(res_data.staff_data);
                 vm.staff_data = res_data.staff_data;
