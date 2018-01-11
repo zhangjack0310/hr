@@ -251,8 +251,8 @@
 
     function first_get_data() {
     $.get(
-//        "http://198.13.53.253:8887/get_data",
-            "http://localhost/get_data",
+        "http://198.13.53.253/get_data",
+//            "http://localhost/get_data",
         function (res_data) {
             console.log(res_data.bubble_data)
             vm.staff_data = res_data.staff_data;
@@ -263,8 +263,8 @@
             myBubble()
         });
     $.get(
-//        "http://198.13.53.253:8887/get_data",
-        "http://localhost/get_selector",
+        "http://198.13.53.253/get_selector",
+//        "http://localhost/get_selector",
         function (res_data) {
             console.log(res_data.department_data);
             vselect.department = res_data.department_data
