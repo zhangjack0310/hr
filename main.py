@@ -38,7 +38,6 @@ class GetdataHandler(tornado.web.RequestHandler):
         based = self.get_argument('based', u"总部")
         firstd = self.get_argument('firstd', u'财务部')
         secondd = self.get_argument('secondd', u'财务部')
-        print based,firstd,secondd
         if based == u'事业部':  # 什么都没选
             query = {"based":u"总部","firstd":u"财务部", "secondd":u"财务部"}
             people = db.base.find(query,{"_id":0})
