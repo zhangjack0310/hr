@@ -91,6 +91,6 @@ def department():
 if __name__ == '__main__':
 
     # base_data_insert()
-    # department_data()
-    # department()
+    department_data()
+    department()
     department_pure_data()

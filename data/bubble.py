@@ -2,7 +2,8 @@
 from pymongo import MongoClient
 conn = MongoClient()
 db = conn.hr
-# people = db.base.find({"事业部":"总部","一级部门":"财务部","二级部门":"财务部"},{"_id":0,"姓名":1,"绩效得分":1,"潜力得分":1})
+people = db.base.find_one({"事业部":"总部","一级部门":"财务部","二级部门":"财务部"})
+from bubble_option import datasets
 def form_bubble_data(person):
     jixiao = person.get(u'绩效得分')
     qianli = person.get(u'潜力得分')
@@ -65,3 +66,42 @@ def form_colour(name,jixiao,qianli,level):
                 "r": 15
             }]})
     return data
+
+def form_department_bubble_data(people):
+    bubble_data = datasets
+    dic = {}
+    for person in people:
+        jixiao = person.get(u'绩效得分')
+        qianli = person.get(u'潜力得分')
+        if jixiao > 85:
+            if qianli > 85:
+                level = '1'
+            elif qianli > 70:
+                level = '2'
+            else:
+                level = '4'
+        elif jixiao > 70:
+            if qianli > 85:
+                level = '3'
+            elif qianli > 70:
+                level = '5'
+            else:
+                level = '6'
+        else:
+            if qianli > 85:
+                level = '7'
+            elif qianli > 70:
+                level = '8'
+            else:
+                level = '9'
+        bubble_data[level]['data'][0]["r"] += 3
+        if dic.has_key(level):
+            dic[level] += 1
+        else:
+            dic[level] = 1
+    for i in dic:
+        bubble_data[i]['label'] = u"Level:{} 人数:{}".format(i,dic[i])
+    return bubble_data.values()
+
+
+li = ['绩效分类','一级部门','工作业绩得分','价值观得分','绩效得分','团队建设','潜力得分','二级部门','合理授权','协调安排','潜力分类','姓名','事业部','能力素质得分','员工培养']

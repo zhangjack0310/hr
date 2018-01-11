@@ -131,7 +131,7 @@
         methods: {
             showRadar: function (user_data) {
                 vm.person.score = user_data.person_score;
-                vm.person.name = user_data.姓名
+                vm.person.name = user_data.姓名;
 
                 // 设置参数
                 var data = {
@@ -285,13 +285,36 @@
                 vm.bubble_data = res_data.bubble_data;
                 myBubble()
             });
-    })
+    });
+    var bubble_options = {
+                    scales: {
+
+                        yAxes: [{
+                            id: 'left-y-axis',
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                min: 55,
+                                max: 100
+                            }
+                        }],
+                        xAxes: [{
+                            id: 'left-x-axis',
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                min: 55,
+                                max: 100
+                            }
+                        }]
+                    }};
+
     function myBubble() {
             var ctx1 = document.getElementById("myBubble").getContext("2d");
                     var myBubble = new Chart(ctx1, {
                         type: 'bubble',
                         data: {'datasets': vm.bubble_data},
-                        options: Chart.defaults.bubble
+                        options: bubble_options
                     });
     }
 
