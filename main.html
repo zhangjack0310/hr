@@ -280,8 +280,8 @@
 
     function first_get_data() {
     $.get(
-//        "http://198.13.53.253/get_data",
-            "http://localhost/get_data",
+        "http://198.13.53.253/get_data",
+//            "http://localhost/get_data",
         function (res_data) {
             vm.staff_data = res_data.staff_data;
             vm.table1_head = res_data.table1_head;
@@ -294,8 +294,8 @@
             myBubble()
         });
     $.get(
-//        "http://198.13.53.253/get_selector",
-        "http://localhost/get_selector",
+        "http://198.13.53.253/get_selector",
+//        "http://localhost/get_selector",
         function (res_data) {
             vselect.department = res_data.department_data
 
@@ -306,8 +306,8 @@
         var d_data = {"firstd":vselect.first_select,
         "based":vselect.base_select,"secondd":vselect.second_select};
         $.get(
-//            "http://198.13.53.253/get_data"
-            "http://localhost/get_data"
+            "http://198.13.53.253/get_data"
+//            "http://localhost/get_data"
             ,d_data,
             function (res_data) {
                 console.log(res_data.staff_data);
