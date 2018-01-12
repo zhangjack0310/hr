@@ -89,27 +89,31 @@
     <canvas id="myChart"></canvas>
 </div>
 
-    <!--<h2 class="ui dividing header">潜力评估情况</h2>-->
-<!--<table class="ui celled table">-->
-    <!--<thead>-->
-    <!--<tr>-->
-        <!--<th v-for="title in table3_head">{{title}}</th>-->
-        <!--<th>雷达图</th>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tbody>-->
-    <!--<tr v-for="(each_data, index) in staff_data">-->
+    <h2 class="ui dividing header">潜力评估情况</h2>
+<table class="ui celled table">
+    <thead>
+    <tr>
+        <th v-for="title in table3_head">{{title}}</th>
+        <th>雷达图</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="(each_data, index) in staff_data">
 
-        <!--<td v-for="title in table3_head">{{each_data[title]}}</td>-->
-        <!--<td>-->
-            <!--<button class="ui yellow button" @click="showRadar(each_data)">雷达图</button>-->
-    <!--</tr>-->
-    <!--<tr>-->
-        <!--<td>部门平均分</td>-->
-        <!--<td v-for="num in team.score">{{num}}</td><td></td><td></td>-->
-    <!--</tr>-->
+        <td v-for="title in table3_head">{{each_data[title]}}</td>
+        <td>
+            <button class="ui yellow button" @click="showRadar1(each_data)">雷达图</button>
+    </tr>
+    <tr>
+        <td>部门平均分</td>
+        <td v-for="num in team.score">{{num}}</td><td></td><td></td>
+    </tr>
     </tbody>
 </table>
+<!-- 展示canvas -->
+<div>
+    <canvas id="myChart1"></canvas>
+</div>
 <h2 class="ui dividing header">人才盘点九宫图</h2>
      <div>
     <canvas id="myBubble"></canvas>
@@ -150,6 +154,7 @@
         el: '#vuetest',
         data: {
             head: ["团队建设","员工培养","协调安排","合理授权"],
+            head1: ['变革敏锐力', '结果敏锐力', '人际敏锐力', '思维敏锐力'],
             team:{
                 "name":"部门平均分",
                 "score":[25, 25, 25, 25]
@@ -167,16 +172,6 @@
             total_data : {}
         },
         methods: {
-            testHover:function (event) {
-
-                event.target.setAttribute("id","laobzhang123");
-                console.log(event.target);
-
-            },
-            removeHover:function (event) {
-                event.target.removeAttribute("id");
-                console.log(event.target);
-            },
             showRadar: function (user_data) {
                 vm.person.score = user_data.person_score;
                 vm.person.name = user_data.姓名;
@@ -218,69 +213,74 @@
                             min: 0,
                             max: 25
                         }
-                    },
-
-                    //Boolean - Whether to show lines for each scale point
-                    scaleShowLine: true,
-
-                    //Boolean - Whether we show the angle lines out of the radar
-                    angleShowLineOut: true,
-
-                    //Boolean - Whether to show labels on the scale
-                    scaleShowLabels: false,
-
-                    // Boolean - Whether the scale should begin at zero
-                    scaleBeginAtZero: true,
-
-                    //String - Colour of the angle line
-                    angleLineColor: "rgba(0,0,0,.1)",
-
-                    //Number - Pixel width of the angle line
-                    angleLineWidth: 1,
-
-                    //String - Point label font declaration
-                    pointLabelFontFamily: "'Arial'",
-
-                    //String - Point label font weight
-                    pointLabelFontStyle: "normal",
-
-                    //Number - Point label font size in pixels
-                    pointLabelFontSize: 10,
-
-                    //String - Point label font colour
-                    pointLabelFontColor: "#376658",
-
-                    //Boolean - Whether to show a dot for each point
-                    pointDot: true,
-
-                    //Number - Radius of each point dot in pixels
-                    pointDotRadius: 3,
-
-                    //Number - Pixel width of point dot stroke
-                    pointDotStrokeWidth: 1,
-
-                    //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-                    pointHitDetectionRadius: 20,
-
-                    //Boolean - Whether to show a stroke for datasets
-                    datasetStroke: true,
-
-                    //Number - Pixel width of dataset stroke
-                    datasetStrokeWidth: 2,
-
-                    //Boolean - Whether to fill the dataset with a colour
-                    datasetFill: true,
-
-                    scaleStartValue: 0,
+                    }
 
                     //String - A legend template
-                    legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+//                    legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
                 };
 
 
                 // Get the context of the canvas element we want to select
                 var ctx = document.getElementById("myChart");
+                var myRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: data,
+                    options: options
+                });
+
+            },
+            showRadar1: function (user_data) {
+                vm.person.score = user_data.person_score;
+                vm.person.name = user_data.姓名;
+                console.log(this);
+
+                // 设置参数
+                var data = {
+                    labels: vm.head1,
+                    datasets: [
+                        {
+                            label: vm.person.name,
+//            线图填充颜色
+                            backgroundColor: "rgba(75,192,192,0.4)",
+//            填充边框颜色
+                            borderColor: "rgba(75,192,192,1)",
+//            顶点颜色
+                            pointBackgroundColor: "rgba(75,192,192,1)",
+//            顶点圈颜色
+                            pointBorderColor: "rgba(75,192,192,1)",
+                            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                            pointHoverBorderColor: "rgba(75,192,192,1)",
+                            pointColor: "rgba(66,37,186,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: vm.person.score
+                        },
+                        {
+                            label: vm.team.name,
+                            data: vm.team.score
+                        }
+                    ]
+                };
+
+
+                var options = {
+                    scale: {
+                        ticks: {
+                            min: 0,
+                            max: 25
+                        }
+                    }
+
+                    //String - A legend template
+//                    legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
+                };
+
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("myChart1");
                 var myRadarChart = new Chart(ctx, {
                     type: 'radar',
                     data: data,
