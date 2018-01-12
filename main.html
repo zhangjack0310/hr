@@ -33,6 +33,22 @@
 
 <div id="vuetest" class="ui container">
     <h2 class="ui dividing header">总览</h2>
+    <table class="ui celled table">
+    <thead>
+    <tr>
+        <th>绩效等级</th>
+        <th>人数</th>
+        <th>占比</th>
+
+    </tr>
+    </thead>
+    <tr  v-for="index in total_head">
+        <td>{{index}}</td>
+        <td>{{total_data[index]['number']}}</td>
+        <td>{{total_data[index]['persentage']}}</td>
+    </tr>
+    </tbody>
+</table>
     <h2 class="ui dividing header">绩效打分明细</h2>
 <table class="ui celled table">
     <thead>
@@ -52,14 +68,15 @@
     <thead>
     <tr>
         <th v-for="title in table2_head">{{title}}</th>
-        <th> 雷达图 </th>
+        <th>雷达图</th>
     </tr>
     </thead>
     <tbody>
     <tr v-for="(each_data, index) in staff_data">
 
         <td v-for="title in table2_head">{{each_data[title]}}</td>
-        <td><button class="ui yellow button" @click="showRadar(each_data)">雷达图</button></td>
+        <td>
+            <button class="ui yellow button" @click="showRadar(each_data)">雷达图</button>
 
     </tr>
     <tr>
@@ -69,23 +86,21 @@
     </tbody>
 </table>
 <!-- 展示canvas -->
- <div>
+<div>
     <canvas id="myChart"></canvas>
- </div>
+</div>
+
 <h2 class="ui dividing header">人才盘点九宫图</h2>
      <div>
     <canvas id="myBubble"></canvas>
  </div>
 </div>
 
-<!--引入 chartjs-->
 
 
 
 <script>
 
-//    $('.tag.example .ui.dropdown').dropdown({
-//    allowAdditions: true});
 
     var vselect = new Vue({
         el: '#selector1',
@@ -126,12 +141,26 @@
             staff_data : [],
             table1_head : [],
             table2_head : [],
+            table3_head : [],
             bubble_data : [],
+            total_head : [],
+            total_data : {}
         },
         methods: {
+            testHover:function (event) {
+
+                event.target.setAttribute("id","laobzhang123");
+                console.log(event.target);
+
+            },
+            removeHover:function (event) {
+                event.target.removeAttribute("id");
+                console.log(event.target);
+            },
             showRadar: function (user_data) {
                 vm.person.score = user_data.person_score;
                 vm.person.name = user_data.姓名;
+                console.log(this);
 
                 // 设置参数
                 var data = {
@@ -231,7 +260,7 @@
 
 
                 // Get the context of the canvas element we want to select
-                var ctx = document.getElementById("myChart").getContext("2d");
+                var ctx = document.getElementById("myChart");
                 var myRadarChart = new Chart(ctx, {
                     type: 'radar',
                     data: data,
@@ -251,22 +280,23 @@
 
     function first_get_data() {
     $.get(
-        "http://198.13.53.253/get_data",
-//            "http://localhost/get_data",
+//        "http://198.13.53.253/get_data",
+            "http://localhost/get_data",
         function (res_data) {
-            console.log(res_data.bubble_data)
             vm.staff_data = res_data.staff_data;
             vm.table1_head = res_data.table1_head;
             vm.table2_head = res_data.table2_head;
+            vm.table3_head = res_data.table3_head;
             vm.team.score = res_data.avg_score;
             vm.bubble_data = res_data.bubble_data;
+            vm.total_data = res_data.total_data;
+            vm.total_head = res_data.total_head;
             myBubble()
         });
     $.get(
-        "http://198.13.53.253/get_selector",
-//        "http://localhost/get_selector",
+//        "http://198.13.53.253/get_selector",
+        "http://localhost/get_selector",
         function (res_data) {
-            console.log(res_data.department_data);
             vselect.department = res_data.department_data
 
         });
@@ -275,14 +305,20 @@
         console.log(vselect.first_select);
         var d_data = {"firstd":vselect.first_select,
         "based":vselect.base_select,"secondd":vselect.second_select};
-        $.get("http://198.13.53.253/get_data",d_data,
+        $.get(
+//            "http://198.13.53.253/get_data"
+            "http://localhost/get_data"
+            ,d_data,
             function (res_data) {
                 console.log(res_data.staff_data);
                 vm.staff_data = res_data.staff_data;
                 vm.table1_head = res_data.table1_head;
                 vm.table2_head = res_data.table2_head;
+                vm.table3_head = res_data.table3_head;
                 vm.team.score = res_data.avg_score;
                 vm.bubble_data = res_data.bubble_data;
+                vm.total_data = res_data.total_data;
+                vm.total_head = res_data.total_head;
                 myBubble()
             });
     });
@@ -310,7 +346,7 @@
                     }};
 
     function myBubble() {
-            var ctx1 = document.getElementById("myBubble").getContext("2d");
+            var ctx1 = document.getElementById("myBubble");
                     var myBubble = new Chart(ctx1, {
                         type: 'bubble',
                         data: {'datasets': vm.bubble_data},

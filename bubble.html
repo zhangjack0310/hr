@@ -10,43 +10,19 @@
     <title>Title</title>
 </head>
 <body>
- <div>
-    <canvas id="myChart"></canvas>
- </div>
+<div class="ui button clickb">Activator</div>
+<div><canvas id='myChart'></canvas></div>
+
 </body>
 </html>
 <script>
 
-
-                // 设置参数
-//                var data = {
-//                    labels: ['laobzhang','laoli','lengd','test'],
-//                    datasets: [
-//                        {
-//                            label: 'lafasdf',
-//                            data: [21,24,19,21],
-////            线图填充颜色
-//                            backgroundColor: "rgba(75,192,192,0.4)",
-////            填充边框颜色
-//                            borderColor: "rgba(75,192,192,1)",
-////            顶点颜色
-//                            pointBackgroundColor: "rgba(75,192,192,1)",
-////            顶点圈颜色
-//                            pointBorderColor: "rgba(75,192,192,1)",
-//                            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-//                            pointHoverBorderColor: "rgba(75,192,192,1)",
-//                            pointColor: "rgba(66,37,186,1)",
-//                            pointStrokeColor: "#fff",
-//                            pointHighlightFill: "#fff",
-//                            pointHighlightStroke: "rgba(220,220,220,1)"
-//
-//                        },
-//                        {
-//                            label: 'laobbzhang',
-//                            data: [15,16,19,10]
-//                        }
-//                    ]
-//                };
+    $('.clickb').on('mouseover',function () {
+        bubbling()
+    });
+    $('.clickb').on('mouseout',function () {
+        nobubble()
+    });
                 var data = {
                     'datasets': [
 
@@ -225,13 +201,19 @@
 
                 };
 
+                function bubbling() {
+                                    // Get the context of the canvas element we want to select
+                    var ctx = $('#myChart');
+                    var myRadarChart = new Chart(ctx, {
+                        type: 'bubble',
+                        data: data,
+                        options: options
+                    });
+                }
+                function nobubble() {
 
-                // Get the context of the canvas element we want to select
-                var ctx = document.getElementById("myChart").getContext("2d");
-                var myRadarChart = new Chart(ctx, {
-                    type: 'bubble',
-                    data: data,
-                    options: options
-                });
-                console.log(Chart.defaults.bubble)
+
+                }
+
+
 </script>

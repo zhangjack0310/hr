@@ -2,6 +2,7 @@
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
+from service import form_total_data
 from data.bubble import form_bubble_data,form_department_bubble_data
 from pymongo import MongoClient
 conn = MongoClient()
@@ -44,34 +45,43 @@ class GetdataHandler(tornado.web.RequestHandler):
             depart_avg = db.depart_avg.find_one(query, {"_id": 0})
             total_data = list(people)
             bubble_data = map(form_bubble_data,total_data)
+            total_person_data = total_data
         elif firstd == u'一级部门':  # 一级部门数据
             query = {"事业部": based}
             people = db.first_depart_avg.find(query, {"_id": 0})
             depart_avg = db.base_depart_avg.find_one(query,{"_id":0})
             total_data = list(people)
-            bubble_data = form_department_bubble_data(db.base.find(query,{"_id":0}))
+            total_person_data = list(db.base.find(query,{"_id":0}))
+            bubble_data = form_department_bubble_data(total_person_data)
         elif secondd == u'二级部门':  # 二级部门数据
             query = {"事业部": based, "一级部门": firstd}
             people = db.depart_avg.find(query, {"_id": 0})
             depart_avg = db.first_depart_avg.find_one(query, {"_id": 0})
             total_data = list(people)
-            bubble_data = form_department_bubble_data(db.base.find(query, {"_id": 0}))
+            total_person_data = list(db.base.find(query, {"_id": 0}))
+            bubble_data = form_department_bubble_data(total_person_data)
         else:
             query = {"事业部": based, "一级部门": firstd, "二级部门": secondd}
             people = db.base.find(query, {"_id": 0})
             depart_avg = db.depart_avg.find_one(query, {"_id": 0})
-            total_data = list(people)
+            total_person_data = total_data = list(people)
             bubble_data = map(form_bubble_data,total_data)
+        sum_data = form_total_data(total_person_data)
+        print sum_data
         avg_score = [depart_avg[u'团队建设'], depart_avg[u'员工培养'], depart_avg[u'协调安排'], depart_avg[u'合理授权']]
         table1_head = [u'姓名', u'工作业绩得分', u'能力素质得分', u'价值观得分', u'绩效得分', u'绩效分类']
         table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'能力素质得分']
+        table3_head = [u'姓名', u'变革敏锐力', u'结果敏锐力', u'人际敏锐力', u'思维敏锐力']
 
 
         result = {'staff_data': map(self.map_data, total_data)}
         result.update({"table1_head": table1_head,
                        'table2_head': table2_head,
+                       'table3_head': table3_head,
                        'avg_score': avg_score,
-                       'bubble_data':bubble_data
+                       'bubble_data':bubble_data,
+                       'total_data':sum_data,
+                       'total_head':["S","A","B","C","D"]
                        })
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(result, ensure_ascii=False))

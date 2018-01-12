@@ -94,7 +94,7 @@ def form_department_bubble_data(people):
                 level = '8'
             else:
                 level = '9'
-        bubble_data[level]['data'][0]["r"] += 3
+        bubble_data[level]['data'][0]["r"] += 2
         if dic.has_key(level):
             dic[level] += 1
         else:
