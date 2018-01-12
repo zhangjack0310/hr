@@ -77,7 +77,6 @@
         <td v-for="title in table2_head">{{each_data[title]}}</td>
         <td>
             <button class="ui yellow button" @click="showRadar(each_data)">雷达图</button>
-
     </tr>
     <tr>
         <td>部门平均分</td>
@@ -90,6 +89,27 @@
     <canvas id="myChart"></canvas>
 </div>
 
+    <!--<h2 class="ui dividing header">潜力评估情况</h2>-->
+<!--<table class="ui celled table">-->
+    <!--<thead>-->
+    <!--<tr>-->
+        <!--<th v-for="title in table3_head">{{title}}</th>-->
+        <!--<th>雷达图</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr v-for="(each_data, index) in staff_data">-->
+
+        <!--<td v-for="title in table3_head">{{each_data[title]}}</td>-->
+        <!--<td>-->
+            <!--<button class="ui yellow button" @click="showRadar(each_data)">雷达图</button>-->
+    <!--</tr>-->
+    <!--<tr>-->
+        <!--<td>部门平均分</td>-->
+        <!--<td v-for="num in team.score">{{num}}</td><td></td><td></td>-->
+    <!--</tr>-->
+    </tbody>
+</table>
 <h2 class="ui dividing header">人才盘点九宫图</h2>
      <div>
     <canvas id="myBubble"></canvas>
