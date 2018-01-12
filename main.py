@@ -5,6 +5,7 @@ from tornado.options import define, options, parse_command_line
 from service import form_total_data
 from data.bubble import form_bubble_data,form_department_bubble_data
 from pymongo import MongoClient
+import os
 conn = MongoClient()
 db = conn.hr
 import json
@@ -137,7 +138,22 @@ class GetselectorHandler(tornado.web.RequestHandler):
 
 
 
-
+class UpLoadHandler(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+    # @tornado.web.authenticated
+    def post(self):
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        file = self.request.files['file'][0]
+        print file.get('content_type')
+        filename = file.get('filename')
+        with open("{}/{}".format(base_path,filename),'w') as f:
+            f.write(file.get('body'))
+        f.close()
+        self.set_header("Content-Type", "application/json")
+        self.finish()
 
 
 
@@ -150,6 +166,7 @@ application = tornado.web.Application([
     (r"/get_data", GetdataHandler),
     (r"/get_head", GetheadHandler),
     (r"/get_selector", GetselectorHandler),
+    (r"/upload_file", UpLoadHandler),
 
     ],**settings)
 
