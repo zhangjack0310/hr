@@ -82,10 +82,10 @@ def department():
         department_name = data.get('department')
         info = data.get('info')
         for first_department in info.keys():
-            print first_department, info[first_department]
-            print info[first_department].keys()
+            # print first_department, info[first_department]
+            # print info[first_department].keys()
             for second_department in info[first_department].keys():
-                print department_name,first_department,second_department
+                # print department_name,first_department,second_department
                 db.department.insert(dict(department_name=department_name, first_department=first_department, second_department=second_department))
 
 
