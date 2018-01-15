@@ -6,6 +6,7 @@
      <script src="//cdn.bootcss.com/Chart.js/2.7.1/Chart.bundle.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
     <script src="static/semantic.js"></script>
     <link href="static/semantic.css" rel="stylesheet">
      <style>
@@ -15,6 +16,19 @@
 <body>
 
 <div class="ui container" id="selector1">
+    <div class="ui secondary menu">
+  <div class="right menu">
+    <!--<div class="item">-->
+      <!--<div class="ui icon input">-->
+        <!--<input type="text" placeholder="Search...">-->
+        <!--<i class="search link icon"></i>-->
+      <!--</div>-->
+    <!--</div>-->
+    <a class="ui item" >{{current_user}}</a>
+    <a class="ui item" @click="logout">登出 </a>
+  </div>
+</div>
+<div>
 <select class="ui search dropdown selection" v-model="base_select" @change="firstd()">
   <option>事业部</option>
   <option v-for="(value,key) in department" :value=key>{{key}}</option>
@@ -28,6 +42,7 @@
   <option v-for="(key,index) in first_value" :value=key>{{key}}</option>
 </select>
     <div class="ui blue button d_submit">提交</div>
+</div>
 </div>
 
 
@@ -124,7 +139,14 @@
 
 
 <script>
-
+    var get_data_url = "http://localhost/get_data";
+    var get_selector_url = "http://localhost/get_selector";
+    var login_url = 'http://localhost/static/login.html';
+    var logout_url = 'http://localhost/logout';
+//    var get_data_url = "http://198.13.53.253/get_data";
+//    var get_selector_url = "http://198.13.53.253/get_selector";
+//    var login_url = 'http://198.13.53.253/static/login.html';
+//    var logout_url = 'http://198.13.53.253/logout';
 
     var vselect = new Vue({
         el: '#selector1',
@@ -133,7 +155,9 @@
             base_select:"事业部",
             first_select:"一级部门",
             second_select:"二级部门",
-            first_value:""
+            first_value:"",
+            current_user:"",
+            is_admin:""
         },
         methods: {
             firstd:function () {
@@ -143,8 +167,15 @@
                 vselect.second_select = '二级部门';
                 vselect.first_value = vselect.department[vselect.base_select][vselect.first_select]
             },
-            first_value:function () {
 
+            logout:function () {
+                axios.get(logout_url)
+                    .then(function (response) {
+                        window.location.href = login_url;
+                    })
+                    .catch(function (error) {
+                        window.location.href = login_url;
+                    });
             }
 
         }
@@ -233,7 +264,7 @@
             showRadar1: function (user_data) {
                 vm.person.score = user_data.person_score;
                 vm.person.name = user_data.姓名;
-                console.log(this);
+
 
                 // 设置参数
                 var data = {
@@ -299,25 +330,39 @@
     });
 
     function first_get_data() {
-    $.get(
-        "http://198.13.53.253/get_data",
-//            "http://localhost/get_data",
-        function (res_data) {
-            vm.staff_data = res_data.staff_data;
-            vm.table1_head = res_data.table1_head;
-            vm.table2_head = res_data.table2_head;
-            vm.table3_head = res_data.table3_head;
-            vm.team.score = res_data.avg_score;
-            vm.bubble_data = res_data.bubble_data;
-            vm.total_data = res_data.total_data;
-            vm.total_head = res_data.total_head;
+    axios.get(get_data_url)
+        .then(function (response) {
+            console.log(response);
+            vm.staff_data = response.data.staff_data;
+            vm.table1_head = response.data.table1_head;
+            vm.table2_head = response.data.table2_head;
+            vm.table3_head = response.data.table3_head;
+            vm.team.score = response.data.avg_score;
+            vm.bubble_data = response.data.bubble_data;
+            vm.total_data = response.data.total_data;
+            vm.total_head = response.data.total_head;
             myBubble()
+        })
+        .catch(function (error) {
+            window.location.href = login_url;
         });
-    $.get(
-        "http://198.13.53.253/get_selector",
-//        "http://localhost/get_selector",
-        function (res_data) {
-            vselect.department = res_data.department_data
+//    $.get(
+////        "http://198.13.53.253/get_data",
+//            "http://localhost/get_data",
+//        function (res_data) {
+//            vm.staff_data = res_data.staff_data;
+//            vm.table1_head = res_data.table1_head;
+//            vm.table2_head = res_data.table2_head;
+//            vm.table3_head = res_data.table3_head;
+//            vm.team.score = res_data.avg_score;
+//            vm.bubble_data = res_data.bubble_data;
+//            vm.total_data = res_data.total_data;
+//            vm.total_head = res_data.total_head;
+//            myBubble()
+//        });
+    $.get(get_selector_url, function (res_data) {
+            vselect.department = res_data.department_data;
+            vselect.current_user = res_data.current_user;
 
         });
     }
@@ -325,22 +370,23 @@
         console.log(vselect.first_select);
         var d_data = {"firstd":vselect.first_select,
         "based":vselect.base_select,"secondd":vselect.second_select};
-        $.get(
-            "http://198.13.53.253/get_data"
-//            "http://localhost/get_data"
-            ,d_data,
-            function (res_data) {
-                console.log(res_data.staff_data);
-                vm.staff_data = res_data.staff_data;
-                vm.table1_head = res_data.table1_head;
-                vm.table2_head = res_data.table2_head;
-                vm.table3_head = res_data.table3_head;
-                vm.team.score = res_data.avg_score;
-                vm.bubble_data = res_data.bubble_data;
-                vm.total_data = res_data.total_data;
-                vm.total_head = res_data.total_head;
-                myBubble()
-            });
+        axios.get(get_data_url,{'params':d_data})
+        .then(function (response) {
+            console.log(response);
+            vm.staff_data = response.data.staff_data;
+            vm.table1_head = response.data.table1_head;
+            vm.table2_head = response.data.table2_head;
+            vm.table3_head = response.data.table3_head;
+            vm.team.score = response.data.avg_score;
+            vm.bubble_data = response.data.bubble_data;
+            vm.total_data = response.data.total_data;
+            vm.total_head = response.data.total_head;
+            myBubble()
+        })
+        .catch(function (error) {
+            window.location.href = login_url;
+
+        });
     });
     var bubble_options = {
                     scales: {

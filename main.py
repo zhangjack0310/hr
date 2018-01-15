@@ -2,19 +2,16 @@
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
-from service import form_total_data
+from service import form_total_data, is_validate_user
 from data.bubble import form_bubble_data,form_department_bubble_data
 from pymongo import MongoClient
+from utils import BaseHandler
 import os
+import session
 conn = MongoClient()
 db = conn.hr
 import json
-define("debug", default=True, help="run in debug mode")
-settings = {"debug":True,
-            "static_path": "static",
-            "cookie_secret":"laobzhangisnotfat",
-            'expires': 15,
-            'login_url': '/login'}
+from settings import settings
 
 class MainHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
@@ -29,7 +26,7 @@ class MainHandler(tornado.web.RequestHandler):
         self.finish(json.dumps(result, ensure_ascii=False))
 
 
-class GetdataHandler(tornado.web.RequestHandler):
+class GetdataHandler(BaseHandler):
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
@@ -115,7 +112,7 @@ class GetheadHandler(tornado.web.RequestHandler):
 
 
 
-class GetselectorHandler(tornado.web.RequestHandler):
+class GetselectorHandler(BaseHandler):
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
@@ -125,10 +122,12 @@ class GetselectorHandler(tornado.web.RequestHandler):
     def get(self):
         departments = db.department_info.find({},{"_id" : 0})
         res = {}
-        for i in departments:
+        current_user = self.current_user
+        user = db.admin_user.find_one({"username":current_user})
 
+        for i in departments:
             res[i.get('department')] = i.get('info')
-        result = {'department_data':res}
+        result = {'department_data':res, 'current_user':current_user}
 
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(result, ensure_ascii=False))
@@ -155,6 +154,8 @@ class UpLoadHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         self.finish()
 
+
+
 class GetWeiboAuthHandler(tornado.web.RequestHandler):
     # def set_default_headers(self):
     #     self.set_header("Access-Control-Allow-Origin", "*")
@@ -174,6 +175,44 @@ class GetWeiboAuthHandler(tornado.web.RequestHandler):
 
 
 
+class LoginHandler(tornado.web.RequestHandler):
+    # def set_default_headers(self):
+    #     self.set_header("Access-Control-Allow-Origin", "*")
+    #     self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+    #     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+    def get(self):
+        self.redirect('static/login.html')
+
+    def post(self):
+        user = self.get_argument('user', '')
+        password = self.get_argument('password', '')
+        print user
+        print password
+        if is_validate_user(user, password):
+            self.set_secure_cookie('user', session.Session.new(user))
+            print "here"
+            return self.redirect("static/main.html")
+        else:
+            print "wrong"
+            return self.redirect('static/login.html')
+
+
+
+class LogoutHandler(BaseHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+    # @tornado.web.authenticated
+    def get(self):
+        user = self.current_user
+        session.Session.rm(user)
+        self.clear_all_cookies()
+        self.finish()
+
+
 
 
 
@@ -185,6 +224,8 @@ application = tornado.web.Application([
     (r"/get_selector", GetselectorHandler),
     (r"/upload_file", UpLoadHandler),
     (r"/get_weibo_auth", GetWeiboAuthHandler),
+    (r"/login", LoginHandler),
+    (r"/logout", LogoutHandler),
 
     ],**settings)
 
