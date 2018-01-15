@@ -165,23 +165,13 @@ class GetWeiboAuthHandler(tornado.web.RequestHandler):
         print self.request.headers
         print self.request
         code = self.get_argument('code',"")
+        access_token = self.get_argument('access_token',"")
+        if access_token:
+            print access_token
         if code:
             print code
         self.finish()
 
-class GetAccessTokenHandler(tornado.web.RequestHandler):
-    # def set_default_headers(self):
-    #     self.set_header("Access-Control-Allow-Origin", "*")
-    #     self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-    #     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-    # @tornado.web.authenticated
-    def get(self):
-        print self.request.headers
-        print self.request
-        access_token = self.get_argument('access_token',"")
-        if access_token:
-            print access_token
-        self.finish()
 
 
 
@@ -194,8 +184,7 @@ application = tornado.web.Application([
     (r"/get_head", GetheadHandler),
     (r"/get_selector", GetselectorHandler),
     (r"/upload_file", UpLoadHandler),
-    (r"/get_weibo_auth", GetWeiboAuthHandler,
-     r"/get_access_token", GetAccessTokenHandler),
+    (r"/get_weibo_auth", GetWeiboAuthHandler),
 
     ],**settings)
 
