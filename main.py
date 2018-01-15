@@ -155,6 +155,16 @@ class UpLoadHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         self.finish()
 
+class GetWeiboAuthHandler(tornado.web.RequestHandler):
+    # def set_default_headers(self):
+    #     self.set_header("Access-Control-Allow-Origin", "*")
+    #     self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+    #     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+    # @tornado.web.authenticated
+    def get(self):
+        print self.request.headers
+        print self.request
+        self.finish()
 
 
 
@@ -167,6 +177,7 @@ application = tornado.web.Application([
     (r"/get_head", GetheadHandler),
     (r"/get_selector", GetselectorHandler),
     (r"/upload_file", UpLoadHandler),
+    (r"/get_weibo_auth", GetWeiboAuthHandler),
 
     ],**settings)
 
