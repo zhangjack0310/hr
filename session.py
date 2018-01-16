@@ -14,7 +14,6 @@ class Session(object):
     def new(cls, account, expire=60*60):
         if account:
             key = settings.SESSION_NAME.format(account)
-            print key
             redis_client.setex(key, account, expire)
             return str(account)
 

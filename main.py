@@ -34,17 +34,15 @@ class GetdataHandler(BaseHandler):
 
     # @tornado.web.authenticated
     def get(self):
-        based = self.get_argument('based', u"总部")
-        firstd = self.get_argument('firstd', u'财务部')
-        secondd = self.get_argument('secondd', u'财务部')
-        if based == u'事业部':  # 什么都没选
-            query = {"based":u"总部","firstd":u"财务部", "secondd":u"财务部"}
-            people = db.base.find(query,{"_id":0})
-            depart_avg = db.depart_avg.find_one(query, {"_id": 0})
-            total_data = list(people)
-            bubble_data = map(form_bubble_data,total_data)
-            total_person_data = total_data
-        elif firstd == u'一级部门':  # 一级部门数据
+        based = self.get_argument('based', '')
+        firstd = self.get_argument('firstd', '')
+        secondd = self.get_argument('secondd', '')
+        print based,firstd,secondd
+        current_user = self.current_user
+        auth = self.user_auth()
+
+        if firstd == u'一级部门': # 一级部门数据
+            print "herere"
             query = {"事业部": based}
             people = db.first_depart_avg.find(query, {"_id": 0})
             depart_avg = db.base_depart_avg.find_one(query,{"_id":0})
@@ -53,19 +51,42 @@ class GetdataHandler(BaseHandler):
             bubble_data = form_department_bubble_data(total_person_data)
         elif secondd == u'二级部门':  # 二级部门数据
             query = {"事业部": based, "一级部门": firstd}
+            print query
+            for i in query:
+                print i,query[i]
             people = db.depart_avg.find(query, {"_id": 0})
             depart_avg = db.first_depart_avg.find_one(query, {"_id": 0})
             total_data = list(people)
             total_person_data = list(db.base.find(query, {"_id": 0}))
+            print total_person_data
             bubble_data = form_department_bubble_data(total_person_data)
         else:
-            query = {"事业部": based, "一级部门": firstd, "二级部门": secondd}
+            user = db.admin_user.find_one({"username": current_user})
+            is_admin = user.get('is_admin')
+            second_level = user.get('second_level')
+            first_level = user.get('first_level')
+            base_level = user.get('base_level')
+            if based and firstd and secondd:
+                query = {"事业部": based, "一级部门": firstd, "二级部门": secondd}
+            else:
+                if is_admin:
+                    query = {"事业部": u"总部", "一级部门": u"财务部", "二级部门": u"财务部"}
+                elif second_level:
+                    query = {"事业部": base_level, "一级部门": first_level, "二级部门": second_level}
+                elif first_level:
+                    query = {"事业部": base_level, "一级部门": first_level}
+                else:
+                    query = {"事业部": base_level}
+            print query
             people = db.base.find(query, {"_id": 0})
             depart_avg = db.depart_avg.find_one(query, {"_id": 0})
             total_person_data = total_data = list(people)
             bubble_data = map(form_bubble_data,total_data)
         sum_data = form_total_data(total_person_data)
-        print sum_data
+        department_select = {"base_select": query.get('事业部') if query.get('事业部') else u"总部",
+                             "first_select": query.get('一级部门') if query.get('一级部门') else u"一级部门",
+                             "second_select": query.get('二级部门') if query.get('二级部门') else u"二级部门"}
+
         avg_score = [depart_avg[u'团队建设'], depart_avg[u'员工培养'], depart_avg[u'协调安排'], depart_avg[u'合理授权']]
         table1_head = [u'姓名', u'工作业绩得分', u'能力素质得分', u'价值观得分', u'绩效得分', u'绩效分类']
         table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'能力素质得分']
@@ -79,7 +100,8 @@ class GetdataHandler(BaseHandler):
                        'avg_score': avg_score,
                        'bubble_data':bubble_data,
                        'total_data':sum_data,
-                       'total_head':["S","A","B","C","D"]
+                       'total_head':["S","A","B","C","D"],
+                       'department_select':department_select
                        })
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(result, ensure_ascii=False))
@@ -120,14 +142,39 @@ class GetselectorHandler(BaseHandler):
 
     # @tornado.web.authenticated
     def get(self):
-        departments = db.department_info.find({},{"_id" : 0})
+        departments = list(db.department_info.find({},{"_id" : 0}))
         res = {}
         current_user = self.current_user
         user = db.admin_user.find_one({"username":current_user})
+        is_admin = user.get('is_admin')
+        first_value = ""
+        if is_admin: # 全部阅览权限
+            for i in departments:
+                res[i.get('department')] = i.get('info')
+                print i.get('department'),i.get('info')
 
-        for i in departments:
-            res[i.get('department')] = i.get('info')
-        result = {'department_data':res, 'current_user':current_user}
+            auth = {'admin':1,"base":1,"first":1,"second":1}
+            first_value = [u"财务部"]
+        else:
+            second_level = user.get('second_level')
+            first_level = user.get('first_level')
+            base_level = user.get('base_level')
+            if second_level:  # 只能看二级部门
+                res[base_level] = {first_level: [second_level]}
+                auth = {'admin': 0, "base": 0, "first": 0, "second": 0}
+
+            elif first_level:  # 只能看一级部门
+                auth = {'admin': 0, "base": 0, "first": 0, "second": 1}
+                for i in departments:
+                    if i.get('department') == base_level:
+                        res[base_level] = {first_level:i.get('info').get(first_level)}
+                first_value = res[base_level][first_level]
+            elif base_level:
+                auth = {'admin': 0, "base": 0, "first": 1, "second": 1}
+                for i in departments:
+                    if i.get('department') == base_level:
+                        res[base_level] = i.get('info')
+        result = {'department_data':res, 'current_user':current_user, 'first_value':first_value, 'auth':auth}
 
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(result, ensure_ascii=False))
@@ -187,14 +234,10 @@ class LoginHandler(tornado.web.RequestHandler):
     def post(self):
         user = self.get_argument('user', '')
         password = self.get_argument('password', '')
-        print user
-        print password
         if is_validate_user(user, password):
             self.set_secure_cookie('user', session.Session.new(user))
-            print "here"
             return self.redirect("static/main.html")
         else:
-            print "wrong"
             return self.redirect('static/login.html')
 
 

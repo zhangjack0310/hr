@@ -29,19 +29,18 @@
   </div>
 </div>
 <div>
-<select class="ui search dropdown selection" v-model="base_select" @change="firstd()">
-  <option>事业部</option>
+<select  class="ui search dropdown selection" v-model="base_select" @change="firstd()">
   <option v-for="(value,key) in department" :value=key>{{key}}</option>
 </select>
-<select class="ui search dropdown selection" v-model="first_select" @change="secondd()">
-  <option>一级部门</option>
+<select  class="ui search dropdown selection" v-model="first_select" @change="secondd()">
+  <option v-if="auth.first">一级部门</option>
   <option v-for="(value,key) in department[base_select]" :value=key>{{key}}</option>
 </select>
-<select class="ui search dropdown selection" v-model="second_select">
-  <option>二级部门</option>
+<select  class="ui search dropdown selection" v-model="second_select">
+  <option v-if="auth.second">二级部门</option>
   <option v-for="(key,index) in first_value" :value=key>{{key}}</option>
 </select>
-    <div class="ui blue button d_submit">提交</div>
+    <div  class="ui blue button d_submit">提交</div>
 </div>
 </div>
 
@@ -155,9 +154,10 @@
             base_select:"事业部",
             first_select:"一级部门",
             second_select:"二级部门",
-            first_value:"",
+            first_value:["二级部门"],
             current_user:"",
-            is_admin:""
+            is_admin:"",
+            auth:{}
         },
         methods: {
             firstd:function () {
@@ -206,7 +206,7 @@
             showRadar: function (user_data) {
                 vm.person.score = user_data.person_score;
                 vm.person.name = user_data.姓名;
-                console.log(this);
+//                console.log(this);
 
                 // 设置参数
                 var data = {
@@ -332,7 +332,7 @@
     function first_get_data() {
     axios.get(get_data_url)
         .then(function (response) {
-            console.log(response);
+//            console.log(response);
             vm.staff_data = response.data.staff_data;
             vm.table1_head = response.data.table1_head;
             vm.table2_head = response.data.table2_head;
@@ -341,38 +341,36 @@
             vm.bubble_data = response.data.bubble_data;
             vm.total_data = response.data.total_data;
             vm.total_head = response.data.total_head;
+            vselect.base_select = response.data.department_select.base_select;
+            vselect.first_select = response.data.department_select.first_select;
+            vselect.second_select = response.data.department_select.second_select;
             myBubble()
         })
         .catch(function (error) {
-            window.location.href = login_url;
+//            console.log(error)
+            if (error.status == 403) {
+                window.location.href = login_url;
+            }
+            else if (error.status == 500) {
+                alert("请选择正确的部门！");
+            }
+
         });
-//    $.get(
-////        "http://198.13.53.253/get_data",
-//            "http://localhost/get_data",
-//        function (res_data) {
-//            vm.staff_data = res_data.staff_data;
-//            vm.table1_head = res_data.table1_head;
-//            vm.table2_head = res_data.table2_head;
-//            vm.table3_head = res_data.table3_head;
-//            vm.team.score = res_data.avg_score;
-//            vm.bubble_data = res_data.bubble_data;
-//            vm.total_data = res_data.total_data;
-//            vm.total_head = res_data.total_head;
-//            myBubble()
-//        });
     $.get(get_selector_url, function (res_data) {
             vselect.department = res_data.department_data;
             vselect.current_user = res_data.current_user;
+            vselect.first_value = res_data.first_value;
+            vselect.auth = res_data.auth;
 
         });
     }
     $('.d_submit').on('click',function () {
-        console.log(vselect.first_select);
+//        console.log(vselect.first_select);
         var d_data = {"firstd":vselect.first_select,
         "based":vselect.base_select,"secondd":vselect.second_select};
         axios.get(get_data_url,{'params':d_data})
         .then(function (response) {
-            console.log(response);
+//            console.log(response);
             vm.staff_data = response.data.staff_data;
             vm.table1_head = response.data.table1_head;
             vm.table2_head = response.data.table2_head;
@@ -384,7 +382,15 @@
             myBubble()
         })
         .catch(function (error) {
-            window.location.href = login_url;
+//            console.log(error)
+            if (error.status == 403) {
+                window.location.href = login_url;
+            }
+            else if (error.status == 500) {
+                alert("请选择正确的部门！");
+            }
+
+
 
         });
     });
