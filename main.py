@@ -229,16 +229,16 @@ class LoginHandler(tornado.web.RequestHandler):
     #     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
     def get(self):
-        self.redirect('static/login.html')
+        self.redirect('hr/login.html')
 
     def post(self):
         user = self.get_argument('user', '')
         password = self.get_argument('password', '')
         if is_validate_user(user, password):
             self.set_secure_cookie('user', session.Session.new(user))
-            return self.redirect("static/main.html")
+            return self.redirect("hr/main.html")
         else:
-            return self.redirect('static/login.html')
+            return self.redirect('hr/login.html')
 
 
 
