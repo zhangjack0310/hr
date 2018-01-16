@@ -83,9 +83,11 @@ class GetdataHandler(BaseHandler):
                              "first_select": query.get('一级部门') if query.get('一级部门') else u"一级部门",
                              "second_select": query.get('二级部门') if query.get('二级部门') else u"二级部门"}
 
-        avg_score = [depart_avg[u'团队建设'], depart_avg[u'员工培养'], depart_avg[u'协调安排'], depart_avg[u'合理授权']]
+        avg_score = [depart_avg[u'结果导向'], depart_avg[u'分析判断'], depart_avg[u'团队合作'], depart_avg[u'沟通能力'], depart_avg[u'积极主动']]
+        # avg_score = [depart_avg[u'团队建设'], depart_avg[u'员工培养'], depart_avg[u'协调安排'], depart_avg[u'合理授权']]
         table1_head = [u'姓名', u'工作业绩得分', u'能力素质得分', u'价值观得分', u'绩效得分', u'绩效分类']
-        table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'能力素质得分']
+        # table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'能力素质得分']
+        table2_head = [u'姓名',u'结果导向',u'分析判断',u'团队合作',u'沟通能力',u'积极主动']
         table3_head = [u'姓名', u'变革敏锐力', u'结果敏锐力', u'人际敏锐力', u'思维敏锐力']
 
 
@@ -106,7 +108,8 @@ class GetdataHandler(BaseHandler):
     def map_data(self, data):
         '''每个人的得分list
             如果没有姓名，则指定部门为姓名'''
-        score = [data[u'团队建设'], data[u'员工培养'], data[u'协调安排'], data[u'合理授权']]
+        # score = [data[u'团队建设'], data[u'员工培养'], data[u'协调安排'], data[u'合理授权']]
+        score = [data[u'结果导向'], data[u'分析判断'], data[u'团队合作'], data[u'沟通能力'], data[u'积极主动']]
         data.update({"person_score": score})
         if not data.get(u'姓名'):
             data[u'姓名'] = data.get(u'二级部门') if data.get(u'二级部门') else data.get(u'一级部门')
@@ -156,6 +159,7 @@ class GetselectorHandler(BaseHandler):
             base_level = user.get('base_level')
             if second_level:  # 只能看二级部门
                 res[base_level] = {first_level: [second_level]}
+                first_value = [second_level]
                 auth = {'admin': 0, "base": 0, "first": 0, "second": 0}
 
             elif first_level:  # 只能看一级部门
@@ -170,7 +174,7 @@ class GetselectorHandler(BaseHandler):
                     if i.get('department') == base_level:
                         res[base_level] = i.get('info')
         result = {'department_data':res, 'current_user':current_user, 'first_value':first_value, 'auth':auth}
-
+        print res
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(result, ensure_ascii=False))
 

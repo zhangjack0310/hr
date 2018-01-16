@@ -29,6 +29,7 @@ def base_data_insert():
             dic.update({head[i]:data[i]})
         print dic
         dic[u'绩效得分'] = round(dic[u'绩效得分'],1)
+        dic[u'能力素质得分'] = round(dic[u'能力素质得分'],1)
         db.base.insert(dic)
 
 def department_data():
@@ -49,8 +50,11 @@ def department_data():
 
         else:
             depart_dic[based][firstd] = {}
+            depart_dic[based][firstd][secondd] = []
+            depart_dic[based][firstd][secondd].append(name)
     # print depart_dic
     for i in depart_dic:
+        print i
         db.base_department.insert({"info":depart_dic[i],'department':i})
 
 def department_pure_data():
@@ -66,6 +70,7 @@ def department_pure_data():
             depart_dic[based][firstd].append(secondd)
         else:
             depart_dic[based][firstd] = []
+            depart_dic[based][firstd].append(secondd)
     # print depart_dic
     for based in depart_dic:
         for firstd in depart_dic[based]:
@@ -89,11 +94,8 @@ def department():
                 db.department.insert(dict(department_name=department_name, first_department=first_department, second_department=second_department))
 
 
-li = ['绩效分类','一级部门','工作业绩得分','价值观得分',
-      '绩效得分','团队建设','潜力得分','二级部门',
-      '合理授权','协调安排','潜力分类','姓名',
-      '事业部','能力素质得分','员工培养']
-avg_item = [u'工作业绩得分',u'价值观得分',u'绩效得分',u'团队建设',u'潜力得分',u'合理授权',u'协调安排',u'能力素质得分',u'员工培养', u'变革敏锐力', u'结果敏锐力', u'人际敏锐力', u'思维敏锐力']
+# li = [工作业绩得分	能力素质得分	结果导向	分析判断	团队合作	沟通能力	积极主动	价值观得分	绩效得分	潜力得分	变革敏锐力	结果敏锐力	人际敏锐力	思维敏锐力]
+avg_item = [u'工作业绩得分',u'能力素质得分',u'结果导向',u'分析判断',u'团队合作',u'沟通能力',u'积极主动',u'价值观得分',u'潜力得分', u'变革敏锐力', u'结果敏锐力', u'人际敏锐力', u'思维敏锐力']
 # print {i:{"$avg":"${}".format(i)} for i in avg_item}
 
 def get_avg(first=True,second=True):
@@ -117,6 +119,7 @@ def get_avg(first=True,second=True):
 
         round_list = avg_item
         for i in round_list:
+            print dic[i],dic
             dic[i] = round(dic[i],1)
         print dic
         if second:
