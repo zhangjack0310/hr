@@ -99,7 +99,7 @@
     </tbody>
 </table>
 <!-- 展示canvas -->
-<div>
+<div id="parentChart">
     <canvas id="myChart"></canvas>
 </div>
 
@@ -125,11 +125,11 @@
     </tbody>
 </table>
 <!-- 展示canvas -->
-<div>
+<div id="parentChart1">
     <canvas id="myChart1"></canvas>
 </div>
 <h2 class="ui dividing header">人才盘点九宫图</h2>
-     <div>
+     <div id="parentBubble">
     <canvas id="myBubble"></canvas>
  </div>
 </div>
@@ -138,14 +138,14 @@
 
 
 <script>
-//    var get_data_url = "http://localhost/get_data";
-//    var get_selector_url = "http://localhost/get_selector";
-//    var login_url = 'http://localhost/static/login.html';
-//    var logout_url = 'http://localhost/logout';
-    var get_data_url = "http://198.13.53.253/get_data";
-    var get_selector_url = "http://198.13.53.253/get_selector";
-    var login_url = 'http://198.13.53.253/hr/login.html';
-    var logout_url = 'http://198.13.53.253/logout';
+    var get_data_url = "http://localhost/get_data";
+    var get_selector_url = "http://localhost/get_selector";
+    var login_url = 'http://localhost/static/login.html';
+    var logout_url = 'http://localhost/logout';
+//    var get_data_url = "http://198.13.53.253/get_data";
+//    var get_selector_url = "http://198.13.53.253/get_selector";
+//    var login_url = 'http://198.13.53.253/hr/login.html';
+//    var logout_url = 'http://198.13.53.253/logout';
 
     var vselect = new Vue({
         el: '#selector1',
@@ -398,18 +398,24 @@
                     scales: {
 
                         yAxes: [{
-                            id: 'left-y-axis',
                             type: 'linear',
                             position: 'left',
+                            scaleLabel:{
+                                display:true,
+                                labelString:"潜力"
+                            },
                             ticks: {
-                                min: 55,
+                                min: 50,
                                 max: 100
                             }
                         }],
                         xAxes: [{
-                            id: 'left-x-axis',
                             type: 'linear',
                             position: 'left',
+                            scaleLabel:{
+                                display:true,
+                                labelString:"绩效"
+                            },
                             ticks: {
                                 min: 55,
                                 max: 100
@@ -418,6 +424,8 @@
                     }};
 
     function myBubble() {
+            $('#myBubble').remove(); // this is my <canvas> element
+            $('#parentBubble').append('<canvas id="myBubble"></canvas>');
             var ctx1 = document.getElementById("myBubble");
                     var myBubble = new Chart(ctx1, {
                         type: 'bubble',

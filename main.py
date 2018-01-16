@@ -87,8 +87,8 @@ class GetdataHandler(BaseHandler):
         # avg_score = [depart_avg[u'团队建设'], depart_avg[u'员工培养'], depart_avg[u'协调安排'], depart_avg[u'合理授权']]
         table1_head = [u'姓名', u'工作业绩得分', u'能力素质得分', u'价值观得分', u'绩效得分', u'绩效分类']
         # table2_head = [u'姓名', u'团队建设', u'员工培养', u'协调安排', u'合理授权', u'能力素质得分']
-        table2_head = [u'姓名',u'结果导向',u'分析判断',u'团队合作',u'沟通能力',u'积极主动']
-        table3_head = [u'姓名', u'变革敏锐力', u'结果敏锐力', u'人际敏锐力', u'思维敏锐力']
+        table2_head = [u'姓名',u'结果导向',u'分析判断',u'团队合作',u'沟通能力',u'积极主动',u'能力素质得分']
+        table3_head = [u'姓名', u'变革敏锐力', u'结果敏锐力', u'人际敏锐力', u'思维敏锐力',u'潜力得分']
 
 
         result = {'staff_data': map(self.map_data, total_data)}
@@ -174,7 +174,6 @@ class GetselectorHandler(BaseHandler):
                     if i.get('department') == base_level:
                         res[base_level] = i.get('info')
         result = {'department_data':res, 'current_user':current_user, 'first_value':first_value, 'auth':auth}
-        print res
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(result, ensure_ascii=False))
 

@@ -30,6 +30,7 @@ def base_data_insert():
         print dic
         dic[u'绩效得分'] = round(dic[u'绩效得分'],1)
         dic[u'能力素质得分'] = round(dic[u'能力素质得分'],1)
+        dic[u'潜力得分'] = round(dic[u'潜力得分'], 1)
         db.base.insert(dic)
 
 def department_data():
