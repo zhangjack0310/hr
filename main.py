@@ -2,7 +2,7 @@
 import tornado.ioloop
 import sys
 reload(sys)
-sys.setdefaultencoding( "utf-8" )  
+sys.setdefaultencoding("utf-8")
 import tornado.web
 from tornado.options import define, options, parse_command_line
 from service import form_total_data, is_validate_user
@@ -40,12 +40,10 @@ class GetdataHandler(BaseHandler):
         based = self.get_argument('based', '')
         firstd = self.get_argument('firstd', '')
         secondd = self.get_argument('secondd', '')
-        print based,firstd,secondd
         current_user = self.current_user
         auth = self.user_auth()
 
         if firstd == u'一级部门': # 一级部门数据
-            print "herere"
             query = {"事业部": based}
             people = db.first_depart_avg.find(query, {"_id": 0})
             depart_avg = db.base_depart_avg.find_one(query,{"_id":0})
@@ -54,14 +52,10 @@ class GetdataHandler(BaseHandler):
             bubble_data = form_department_bubble_data(total_person_data)
         elif secondd == u'二级部门':  # 二级部门数据
             query = {"事业部": based, "一级部门": firstd}
-            print query
-            for i in query:
-                print i,query[i]
             people = db.depart_avg.find(query, {"_id": 0})
             depart_avg = db.first_depart_avg.find_one(query, {"_id": 0})
             total_data = list(people)
             total_person_data = list(db.base.find(query, {"_id": 0}))
-            print total_person_data
             bubble_data = form_department_bubble_data(total_person_data)
         else:
             user = db.admin_user.find_one({"username": current_user})
@@ -80,7 +74,6 @@ class GetdataHandler(BaseHandler):
                     query = {"事业部": base_level, "一级部门": first_level}
                 else:
                     query = {"事业部": base_level}
-            print query
             people = db.base.find(query, {"_id": 0})
             depart_avg = db.depart_avg.find_one(query, {"_id": 0})
             total_person_data = total_data = list(people)
