@@ -151,7 +151,6 @@ class GetselectorHandler(BaseHandler):
         if is_admin: # 全部阅览权限
             for i in departments:
                 res[i.get('department')] = i.get('info')
-                print i.get('department'),i.get('info')
 
             auth = {'admin':1,"base":1,"first":1,"second":1}
             first_value = [u"财务部"]
@@ -210,8 +209,6 @@ class GetWeiboAuthHandler(tornado.web.RequestHandler):
     #     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
     # @tornado.web.authenticated
     def get(self):
-        print self.request.headers
-        print self.request
         code = self.get_argument('code',"")
         access_token = self.get_argument('access_token',"")
         if access_token:
