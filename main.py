@@ -1,5 +1,8 @@
 #coding:utf-8
 import tornado.ioloop
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )  
 import tornado.web
 from tornado.options import define, options, parse_command_line
 from service import form_total_data, is_validate_user
