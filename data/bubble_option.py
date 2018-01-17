@@ -35,7 +35,7 @@ datasets = {
             {
                 "x": 90,
                 "y": 60,
-                "r": 1
+                "r": 0
             }],
         "backgroundColor": "rgba(135,206,235,0.4)",
         "borderColor": "rgba(135,206,235,1)"
@@ -45,7 +45,7 @@ datasets = {
         "data": [{
             "x": 75,
             "y": 75,
-            "r": 1
+            "r": 0
         }],
         "backgroundColor": "rgba(135,206,235,0.4)",
         "borderColor": "rgba(135,206,235,1)"
@@ -56,7 +56,7 @@ datasets = {
             {
                 "x": 75,
                 "y": 60,
-                "r": 1
+                "r": 0
             }],
         "backgroundColor": "rgba(135,206,235,0.4)",
         "borderColor": "rgba(135,206,235,1)"
@@ -66,7 +66,7 @@ datasets = {
         "data": [{
                 "x": 60,
                 "y": 90,
-                "r": 1
+                "r": 0
             }],
         "backgroundColor": "rgba(255,127,80,0.4)",
         "borderColor": "rgba(255,127,80,1)"
@@ -76,7 +76,7 @@ datasets = {
         "data": [{
             "x": 60,
             "y": 75,
-            "r": 1
+            "r": 0
         }],
         "backgroundColor": "rgba(255,127,80,0.4)",
         "borderColor": "rgba(255,127,80,1)"
@@ -86,7 +86,7 @@ datasets = {
         "data": [{
             "x": 60,
             "y": 60,
-            "r": 1
+            "r": 0
         }],
         "backgroundColor": "rgba(128,128,128,0.4)",
         "borderColor": "rgba(128,128,128,1)"

@@ -69,7 +69,9 @@ def form_colour(name,jixiao,qianli,level):
 
 def form_department_bubble_data(people):
     bubble_data = datasets
+    print id(bubble_data)
     dic = {}
+    re_bubble = {}
     for person in people:
         jixiao = person.get(u'绩效得分')
         qianli = person.get(u'潜力得分')
@@ -94,14 +96,21 @@ def form_department_bubble_data(people):
                 level = '8'
             else:
                 level = '9'
-        bubble_data[level]['data'][0]["r"] += 2
+        if re_bubble.has_key(level):
+            re_bubble[level]['data'][0]["r"] += 3.5
+        else:
+            bubble_data[level]['data'][0]["r"] = 0
+            re_bubble[level] = bubble_data[level]
+            re_bubble[level]['data'][0]["r"] += 3.5
+
         if dic.has_key(level):
             dic[level] += 1
         else:
             dic[level] = 1
     for i in dic:
-        bubble_data[i]['label'] = u"Level:{} 人数:{}".format(i,dic[i])
-    return bubble_data.values()
+
+        re_bubble[i]['label'] = u"Level:{} 人数:{}".format(i,dic[i])
+    return re_bubble.values()
 
 
 li = ['绩效分类','一级部门','工作业绩得分','价值观得分','绩效得分','团队建设','潜力得分','二级部门','合理授权','协调安排','潜力分类','姓名','事业部','能力素质得分','员工培养']
