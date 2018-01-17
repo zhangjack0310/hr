@@ -275,7 +275,7 @@ class LogoutHandler(BaseHandler):
 
 
 application = tornado.web.Application([
-    (r"/", MainHandler),
+    # (r"/", MainHandler),
     (r"/get_data", GetdataHandler),
     (r"/get_head", GetheadHandler),
     (r"/get_selector", GetselectorHandler),

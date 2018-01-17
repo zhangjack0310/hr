@@ -16,32 +16,35 @@
 <body>
 
 <div class="ui container" id="selector1">
-    <div class="ui secondary menu">
-  <div class="right menu">
-    <!--<div class="item">-->
-      <!--<div class="ui icon input">-->
-        <!--<input type="text" placeholder="Search...">-->
-        <!--<i class="search link icon"></i>-->
-      <!--</div>-->
-    <!--</div>-->
-    <a class="ui item" >{{current_user}}</a>
-    <a class="ui item" @click="logout">登出 </a>
-  </div>
-</div>
-<div>
-<select  class="ui search dropdown selection" v-model="base_select" @change="firstd()">
-  <option v-for="(value,key) in department" :value=key>{{key}}</option>
-</select>
-<select  class="ui search dropdown selection" v-model="first_select" @change="secondd()">
-  <option v-if="auth.first">一级部门</option>
-  <option v-for="(value,key) in department[base_select]" :value=key>{{key}}</option>
-</select>
-<select  class="ui search dropdown selection" v-model="second_select">
-  <option v-if="auth.second">二级部门</option>
-  <option v-for="(key,index) in first_value" :value=key>{{key}}</option>
-</select>
-    <div  class="ui blue button d_submit">提交</div>
-</div>
+
+    <div class="ui borderless main menu fixed">
+        <div class="ui container">
+            <h3 href="#" class="header item">
+                <img class="logo" src="static/the_one_logo.png">
+                绩效汇总结果
+            </h3>
+            <div class="middle aligned">
+
+            <select class="ui search dropdown selection" v-model="base_select" @change="firstd()">
+                <option v-for="(value,key) in department" :value=key>{{key}}</option>
+            </select>
+            <select class="ui search dropdown selection" v-model="first_select" @change="secondd()">
+                <option v-if="auth.first">一级部门</option>
+                <option v-for="(value,key) in department[base_select]" :value=key>{{key}}</option>
+            </select>
+            <select class="ui search dropdown selection" v-model="second_select">
+                <option v-if="auth.second">二级部门</option>
+                <option v-for="(key,index) in first_value" :value=key>{{key}}</option>
+            </select>
+            <div class="ui purple button d_submit">查询</div>
+            </div>
+            <div class="right menu">
+                <a class="ui item">{{current_user}}</a>
+                <a class="ui item" @click="logout">登出 </a>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 
@@ -152,12 +155,36 @@
 <h2 class="ui dividing header">人才盘点九宫图</h2>
     <div class="ui container">
     <img src="static/nine.png" class="image"></div>
+    <br>
      <div id="parentBubble">
     <canvas id="myBubble"></canvas>
  </div>
 </div>
+<br><br><br><br>
+<div class="ui purple vertical footer segment">
+    <div class="ui container">
+      <div class="ui stackable inverted divided equal height stackable grid">
+        <div class="three wide column">
+          <h4 class="ui purple header">About</h4>
+          <div class="ui purple link list">
+            <a href="http://www.1tai.com/" class="item" target="_blank">官方网站</a>
 
 
+          </div>
+        </div>
+        <div class="three wide column">
+          <h4 class="ui purple header">Services</h4>
+          <div class="ui purple link list">
+            <a href="#" class="item">联系我们</a>
+          </div>
+        </div>
+        <div class="seven wide column">
+          <h4 class="ui purple header">使用</h4>
+          <p>仅限The One智能钢琴内部使用，请不要泄露您的账号密码</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 <script>
