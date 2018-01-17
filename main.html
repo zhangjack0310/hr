@@ -93,7 +93,7 @@
 
                     <td v-for="title in table2_head">{{each_data[title]}}</td>
                     <td>
-                        <button class="ui yellow button small" @click="showRadar(each_data)">雷达图</button>
+                        <button class="ui yellow button very small" @click="showRadar(each_data)">雷达图</button>
                     </td>
                 </tr>
                 <tr>
@@ -130,7 +130,7 @@
 
                     <td v-for="title in table3_head">{{each_data[title]}}</td>
                     <td>
-                        <button class="ui yellow button small" @click="showRadar1(each_data)">雷达图</button>
+                        <button class="ui yellow button very small" @click="showRadar1(each_data)">雷达图</button>
                     </td>
                 </tr>
                 <tr>
@@ -401,6 +401,10 @@
 //        console.log(vselect.first_select);
         var d_data = {"firstd":vselect.first_select,
         "based":vselect.base_select,"secondd":vselect.second_select};
+        $('#myChart').remove(); // this is my <canvas> element
+        $('#parentChart').append('<canvas id="myChart"></canvas>');
+        $('#myChart1').remove(); // this is my <canvas> element
+        $('#parentChart1').append('<canvas id="myChart1"></canvas>');
         axios.get(get_data_url,{'params':d_data})
         .then(function (response) {
 //            console.log(response);
