@@ -407,7 +407,7 @@
             myBubble(response.data.bubble_tooltip)
         })
         .catch(function (error) {
-//            console.log(error)
+            console.log(error)
             if (error.status == 403) {
                 window.location.href = login_url;
             }
@@ -447,7 +447,7 @@
             myBubble(response.data.bubble_tooltip);
         })
         .catch(function (error) {
-//            console.log(error)
+            console.log(error)
             if (error.status == 403) {
                 window.location.href = login_url;
             }
