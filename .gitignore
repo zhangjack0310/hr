@@ -3,3 +3,4 @@
 test/
 *.pyc
 */*.pyc
+excel_doc

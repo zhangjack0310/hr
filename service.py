@@ -12,14 +12,14 @@ def md5_encrypt(data):
 def form_total_data(people):
     total_mark = {"S":{"number":0},"A":{"number":0},"B":{"number":0},"C":{"number":0},"D":{"number":0}}
     for person in people:
-        value = person.get(u'绩效得分')
-        if value >= 95:
+        value = person.get(u'绩效分类')
+        if value == "S":
             total_mark['S']['number'] += 1
-        elif value >=85:
+        elif value =="A":
             total_mark['A']['number'] += 1
-        elif value >=70:
+        elif value =="B":
             total_mark['B']['number'] += 1
-        elif value >=60:
+        elif value =="C":
             total_mark['C']['number'] += 1
         else:
             total_mark['D']['number'] += 1

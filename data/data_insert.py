@@ -15,7 +15,7 @@ from pymongo import MongoClient
 conn = MongoClient()
 db = conn.hr
 base_path = os.path.dirname(os.path.abspath(__file__))
-path = '{}/../data_insert.xlsx'.format(base_path)
+path = '{}/../excel_doc/data_insert.xlsx'.format(base_path)
 data = xlrd.open_workbook(path)
 table = data.sheets()[0]
 nrows = table.nrows

@@ -3,6 +3,7 @@
 import xlrd
 from hashlib import md5
 from pymongo import MongoClient
+import os
 conn = MongoClient()
 db = conn.hr
 def md5_encrypt(data):
@@ -10,7 +11,8 @@ def md5_encrypt(data):
     m.update(data)
     return m.hexdigest()
 
-path = "admin_user.xlsx"
+base_path = os.path.dirname(os.path.abspath(__file__))
+path = '{}/../excel_doc/user_insert.xlsx'.format(base_path)
 data = xlrd.open_workbook(path)
 table = data.sheets()[0]
 nrows = table.nrows
