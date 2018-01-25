@@ -27,10 +27,10 @@ def base_data_insert():
         dic = {}
         for i in range(len(head)):
             dic.update({head[i]:data[i]})
-        print dic
-        dic[u'绩效得分'] = round(dic[u'绩效得分'],1)
-        dic[u'能力素质得分'] = round(dic[u'能力素质得分'],1)
-        dic[u'潜力得分'] = round(dic[u'潜力得分'], 1)
+        li = [u'结果导向',u'分析判断',u'团队合作',u'沟通能力',u'积极主动',u'能力素质得分',
+              u'变革敏锐力', u'结果敏锐力', u'人际敏锐力', u'思维敏锐力',u'潜力得分']
+        for i in li:
+            dic[i] = round(dic[i],1)
         db.base.insert(dic)
 
 def department_data():
@@ -55,7 +55,6 @@ def department_data():
             depart_dic[based][firstd][secondd].append(name)
     # print depart_dic
     for i in depart_dic:
-        print i
         db.base_department.insert({"info":depart_dic[i],'department':i})
 
 def department_pure_data():
@@ -120,9 +119,7 @@ def get_avg(first=True,second=True):
 
         round_list = avg_item
         for i in round_list:
-            print dic[i],dic
             dic[i] = round(dic[i],1)
-        print dic
         if second:
             db.depart_avg.insert(dic)
         elif first:
